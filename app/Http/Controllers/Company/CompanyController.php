@@ -5,8 +5,11 @@ namespace App\Http\Controllers\Company;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Company;
+use App\Loker;
+use App\Registration;
 use Auth;
 use Storage;
+use DB;
 
 class CompanyController extends Controller
 {
@@ -15,7 +18,13 @@ class CompanyController extends Controller
     }
 
     public function index(){
-      return view('home.comp.dashboard');
+      //$lokers = Loker::where('company_id',Auth::guard('company')->user()->id)->get();
+      $registrations = DB::table('registrations')
+                      ->join('lokers','lokers.id','=','registrations.loker_id')
+                      ->join('companies','companies.id','=','lokers.company_id')
+                      ->where('lokers.company_id',Auth::guard('company')->user()->id)
+                      ->get();
+      return view('home.comp.dashboard',compact('registrations'));
     }
 
     public function profile(){
@@ -38,7 +47,8 @@ class CompanyController extends Controller
             'company_number' => $request->company_number,
             'phone' => $request->phone,
             'address' => $request->address,
-            'avatar' => $avatar
+            'avatar' => $avatar,
+            'status' => 1
           ]);
         }else {
           $avatar_path = $company->avatar;
@@ -51,7 +61,8 @@ class CompanyController extends Controller
             'company_number' => $request->company_number,
             'phone' => $request->phone,
             'address' => $request->address,
-            'avatar' => $avatar
+            'avatar' => $avatar,
+            'status' => 1
           ]);
         }
       }
@@ -61,6 +72,7 @@ class CompanyController extends Controller
           'company_number' => $request->company_number,
           'phone' => $request->phone,
           'address' => $request->address,
+          'status' => 1
         ]);
        }
 

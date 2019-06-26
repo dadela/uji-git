@@ -13,4 +13,12 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::get('loker','API\LokerConroller@index');
+//Route::get('loker','API\LokerConroller@index');
+Route::post('user/register','API\UserController@register');
+Route::post('user/login','API\UserController@login');
+Route::post('user/registration','API\UserController@userRegistration')->middleware('auth:api');
+Route::get('user/loker','API\UserController@userLoker')->middleware('auth:api');
+Route::get('company','API\CompanyController@index');
+Route::get('company/{id}','API\CompanyController@companyLoker');
+Route::get('loker','API\LokerController@index');
+Route::get('loker/{id}','API\LokerController@details');
